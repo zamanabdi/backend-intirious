@@ -28,7 +28,7 @@ const authenticate = async(req,res,next)=>{
 
     //Bearer token...
     try {
-        const token=req.headers.authorization?.split(" ")[1]
+        const token=req.headers.authorization?.split(" ")[1];
         if(!token){
             return req.status(404).send({message:"token not found"})
         }
