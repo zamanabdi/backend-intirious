@@ -12,6 +12,7 @@
 
 const Address = require("../models/address.model.js");
 const Order = require("../models/order.model.js");
+const OrderItem = require("../models/orderitems.model.js");
 const cartService = require("../services/cart.service");
 
 async function createOrder(user, shippAddress) {
@@ -33,7 +34,7 @@ async function createOrder(user, shippAddress) {
   const orderItems = [];
 
   for (const item of cart.cartItems) {
-    const orderItem = new orderItems({
+    const orderItem = new OrderItem({
       price: item.price,
       product: item.product,
       quantity: item.quantity,
@@ -47,17 +48,21 @@ async function createOrder(user, shippAddress) {
     orderItems.push(createdOrderItem);
   }
 
-  const createdOrder = new orderItems({
+  const createdOrder = new Order({
     user,
     orderItems,
-    totalPrice:cart.totalPrice,
-    totalDiscountedPrice:cart.totalDiscountedPrice,
-    discount:cart.discounte,
-    totalItem:cart.totalItem,
-    shippAddress:address,
+    totalPrice: cart.totalPrice,
+    totalDiscountedPrice: cart.totalDiscountedPrice,
+    discounte: cart.discounte,
+    totalItem: cart.totalItem,
+    shippingAddress: address,
+    orderDate: new Date(),
+    orderStatus: "PENDING", // Assuming OrderStatus is a string enum or a valid string value
+    "paymentDetails.status": "PENDING", // Assuming PaymentStatus is nested under 'paymentDetails'
+    createdAt: new Date(),
   });
 
-  const savedOrder = await createOrder.save();
+  const savedOrder = await createdOrder.save();
 
   return savedOrder
 
